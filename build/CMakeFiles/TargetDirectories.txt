@@ -1,0 +1,16 @@
+/home/user/Bureau/atmproject/mycuda01/cppmysql1/build/CMakeFiles/rebuild_cache.dir
+/home/user/Bureau/atmproject/mycuda01/cppmysql1/build/CMakeFiles/edit_cache.dir
+/home/user/Bureau/atmproject/mycuda01/cppmysql1/build/csocial/CMakeFiles/rebuild_cache.dir
+/home/user/Bureau/atmproject/mycuda01/cppmysql1/build/csocial/CMakeFiles/edit_cache.dir
+/home/user/Bureau/atmproject/mycuda01/cppmysql1/build/csocial/src/CMakeFiles/rebuild_cache.dir
+/home/user/Bureau/atmproject/mycuda01/cppmysql1/build/csocial/src/CMakeFiles/edit_cache.dir
+/home/user/Bureau/atmproject/mycuda01/cppmysql1/build/csocial/src/CMakeFiles/server.dir
+/home/user/Bureau/atmproject/mycuda01/cppmysql1/build/csocial/src/CMakeFiles/libserver.dir
+/home/user/Bureau/atmproject/mycuda01/cppmysql1/build/csocial/src/domain/CMakeFiles/rebuild_cache.dir
+/home/user/Bureau/atmproject/mycuda01/cppmysql1/build/csocial/src/domain/CMakeFiles/edit_cache.dir
+/home/user/Bureau/atmproject/mycuda01/cppmysql1/build/csocial/src/domain/CMakeFiles/libstudent.dir
+/home/user/Bureau/atmproject/mycuda01/cppmysql1/build/csocial/src/infrastructure/CMakeFiles/rebuild_cache.dir
+/home/user/Bureau/atmproject/mycuda01/cppmysql1/build/csocial/src/infrastructure/CMakeFiles/edit_cache.dir
+/home/user/Bureau/atmproject/mycuda01/cppmysql1/build/csocial/src/infrastructure/CMakeFiles/libstudentcontroller.dir
+/home/user/Bureau/atmproject/mycuda01/cppmysql1/build/csocial/src/infrastructure/CMakeFiles/libstudentrepository.dir
+/home/user/Bureau/atmproject/mycuda01/cppmysql1/build/csocial/src/infrastructure/CMakeFiles/libidgenerator.dir

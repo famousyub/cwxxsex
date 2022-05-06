@@ -1,0 +1,228 @@
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.14.1/dist/tf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<div id="point"></div>
+
+<script>
+
+
+  // 整数乱数を取得
+  const getRandomInt = (min, max) => (Math.floor(Math.random() * (Math.floor(max) - Math.floor(min)) + Math.floor(min)));
+  // 二つの配列をzip化
+  const zip = (array1, array2) => array1.map((_, index) => [array1[index], array2[index]]);
+
+  const DATA_SIZE = 100;
+  const DOMAIN_MIN = -5.0;
+  const DOMAIN_MAX = 5.0;
+  const functionMap = {
+    0: (x) => (Math.sin(x * 5/(2*Math.PI)) + Math.random()),
+    1: (x) => (Math.cos(x * 5/(2*Math.PI)) + Math.random()),
+    2: (x) => ((20 - 20 * Math.exp(-0.2 * Math.sqrt(Math.pow(x,2)/2)) + Math.exp(1) - Math.exp((2*Math.cos(2*Math.PI*x))) + 2 * Math.random()) / 14),
+    3: (x) => (-Math.cos(x) * Math.exp(-((x-Math.PI) * 2)) * 0.000001 + Math.random())
+  }
+  const FUNCTION_MAP_SIZE = Object.keys(functionMap).length;
+
+  const functionRandomSelector = () => functionMap[getRandomInt(0,FUNCTION_MAP_SIZE)];
+
+  const optimConfig = {
+    optimizer: 'adam',
+    loss: 'meanSquaredError'
+  }
+
+  const sequentialDenseModelConfig = {
+    layers: [{
+      units: 1,
+      inputShape: [1]
+    },{
+      units: 20,
+      activation: 'relu'
+    },{
+      units: 20,
+      activation: 'relu'
+    },{
+      units: 20,
+      activation: 'relu'
+    },{
+      units: 20,
+      activation: 'relu'
+    },{
+      units: 1,
+      activation: 'linear'
+    }]
+  }
+
+  const createSequentialDenseModelFromConfig = (compile=true) => {
+    let model = tf.sequential();
+    for (key in sequentialDenseModelConfig['layers']) {
+      model.add(tf.layers.dense(sequentialDenseModelConfig['layers'][key]));
+    }
+    if (compile) {
+      model.compile(optimConfig);
+    }
+    return model;
+  };
+
+  const loadNnModel = () => {
+    return createSequentialDenseModelFromConfig();
+  };
+  const nnModel = loadNnModel();
+
+  class ChartDataModel {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+    }
+  }
+
+  class DataHandler {
+    constructor(fecheData, objectiveFunctionSelector) {
+      this.originalData;
+      this.feche = (_function) => fecheData(_function);
+      this.objectiveFunctionSelector = () => objectiveFunctionSelector();
+    }
+    init = () => {
+      this.originalData = this.feche(this.objectiveFunctionSelector());
+    }
+    // data[..].x -> x:tensor1d[..]
+    convertTensorDataX = () => tf.tensor1d(this.originalData.map(value => value.x),'float32');
+    // data[..].y -> y:tensor1d[..]
+    convertTensorDataY = () => tf.tensor1d(this.originalData.map(value => value.y),'float32');
+
+    tidyPredict = (model, x) => tf.tidy(() => model.predict(x));
+
+    // tensor型のTrainデータ(x)とそれに対するモデルの予測データ(y)を、ChartDataModel型の配列でzip化して返却
+    packPredictedDatasets = (model) => {
+      const tensorData = this.convertTensorDataX();
+      return zip(
+        Array.from(tensorData.dataSync()),
+        Array.from(this.tidyPredict(model, tensorData).dataSync())
+      ).map(([x, y]) => new ChartDataModel(x, y));
+    }
+  }
+
+  const fetchData = (_function) => [...Array(DATA_SIZE).keys()].map(
+    value => new ChartDataModel(value * ((DOMAIN_MAX - DOMAIN_MIN)/DATA_SIZE) + DOMAIN_MIN, _function(value * ((DOMAIN_MAX - DOMAIN_MIN)/DATA_SIZE) + DOMAIN_MIN))
+  );
+
+  const dh = new DataHandler(fetchData, functionRandomSelector);
+  dh.init();
+
+  // 描画更新
+  const updateDrawing = async (epoch, log) => {
+    window.chart.data.datasets[1].data = dh.packPredictedDatasets(nnModel);
+    window.chart.update();
+    $("#lossValue").text(`${log.loss}`);
+    $("#epoch").text((`${epoch + 1}` ).toString().padStart(3,"0") + "/" + EPOCHS.toString());
+  };
+
+  // Train ボタン押下時の処理
+  const EPOCHS = 100;
+  const BATCH_SIZE = 10;
+  const trainModel = async () => {
+    const f = await nnModel.fit(dh.convertTensorDataX(), dh.convertTensorDataY(), {
+      epochs: EPOCHS,
+      batchSize: BATCH_SIZE,
+      callbacks: {
+        onEpochEnd: updateDrawing
+      }
+    });
+  };
+
+  // Reset ボタン押下時の処理
+  const resetAll = () => {
+    nnModel.compile(optimConfig);
+    dh.init();
+    window.chart.data.datasets[0].data = dh.originalData;
+    window.chart.data.datasets[1].data = dh.packPredictedDatasets(nnModel);
+    window.chart.update();
+    $('#lossValue').text('');
+    $('#epoch').text('');
+  };
+
+  // load
+  $(async () => {
+    await setDom();
+    dh.init();
+    const color = Chart.helpers.color;
+    const chartColors = {
+      red: '#FF0000',
+      blue: '#0000FF'
+    };
+    const scatterData = {
+      datasets:[{
+        label: 'train dots',
+        borderColor: chartColors.red,
+        backgroundColor: color(chartColors.red).alpha(0.2).rgbString(),
+        pointRadius: 10,
+        data: dh.originalData,
+        type: 'scatter'
+      },{
+        label: 'predict line',
+        borderColor: chartColors.blue,
+        backgroundColor: color(chartColors.blue).alpha(0.2).rgbString(),
+        data: dh.packPredictedDatasets(nnModel),
+        type: 'scatter'
+      }]
+    };
+    const ctx = document.getElementById('canvas').getContext('2d');
+    window.chart = new Chart(ctx, {
+      type: 'scatter',
+      data: scatterData,
+      option:{
+        title: {
+          display: true,
+          text: 'Chart.js Scatter Chart'
+        },
+        scales: {
+          xAxes: {
+            ticks: {
+              min: DOMAIN_MIN,
+              max: DOMAIN_MAX,
+            }
+          }
+        }
+      }
+    });
+  });
+
+  // <div id="point"></div> に対して描画DOMを生成する
+  const setDom = async () => {
+    $('div#point')
+    .after('<div id="buttonArea"></div>');
+    $('#buttonArea')
+    .append('<input type="button" value="Reset" onclick="resetAll()" class="buttonStyle"/>');
+    $('#buttonArea')
+    .append('<input type="button" value="Train" onclick="trainModel()" class="buttonStyle"/>');
+    $('#buttonArea')
+    .after('<div id="textArea1"></div>');
+    $('#textArea1')
+    .append('<div class="textStyle">Loss:</div>');
+    $('#textArea1')
+    .append('<div id="lossValue" class="textStyle"></div>');
+    $('#textArea1')
+    .after('<div id="textArea2"></div>');
+    $('#textArea2')
+    .append('<div class="textStyle">Epoch:</div>');
+    $('#textArea2')
+    .append('<div id="epoch" class="textStyle"></div>');
+    $('#textArea2')
+    .after('<div id="canvasArea"></div>');
+    $('#canvasArea')
+    .append('<canvas id="canvas" width="300" height="100"></canvas>');
+    $('.buttonArea').css({
+      'display':'flex',
+      'margin':'auto'
+    });
+    $('.buttonStyle').css({
+      'padding':'20px',
+      'margin':'10px'
+    });
+    $('.textStyle').css({
+      'padding':'10px',
+      'margin':'10px',
+      'text-algin':'left',
+      'margin-left':'20px',
+      'display':'inline-block'
+    });
+  };
+  </script>

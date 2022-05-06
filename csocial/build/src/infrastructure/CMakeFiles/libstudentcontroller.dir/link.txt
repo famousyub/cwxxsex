@@ -1,0 +1,2 @@
+/usr/bin/ar qc liblibstudentcontroller.a  CMakeFiles/libstudentcontroller.dir/StudentController.cpp.o
+/usr/bin/ranlib liblibstudentcontroller.a

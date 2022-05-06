@@ -1,0 +1,2 @@
+/usr/bin/ar qc liblibstudent.a  CMakeFiles/libstudent.dir/Student.cpp.o
+/usr/bin/ranlib liblibstudent.a

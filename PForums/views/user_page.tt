@@ -1,0 +1,292 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+
+<style>
+ #div {
+   font-size: 14px;
+   line-height: 1.4;
+ }
+ #image {
+   background-image: url("/images/ava.jpg");
+   background-size: cover;
+   background-position: 50% 50%;
+   background-repeat: no-repeat;
+   border-radius: 50%;
+   margin: 0 auto;
+   margin-top: -60px;
+   margin-bottom: 20px;
+   width: 120px;
+   height: 120px;
+ }
+ #name-headline {
+   padding-left: 20px;
+   padding-right: 20px;
+   text-align: center;
+   color: #666;
+ }
+ #name {
+   font-size: 20px;
+   line-height: 1.2;
+   text-transform: uppercase;
+   letter-spacing: 2px;
+   margin: 0;
+   margin-bottom: 10px;
+   color: #333;
+ }
+ #email, #token {
+   font-size: 16px;
+   line-height: 1.2;
+   font-weight: 700;
+   margin: 0;
+   outline: 0;
+ }
+ #text {
+   font-size: 18px;
+   line-height: 1.2;
+   font-weight: 700;
+   margin: 0;
+   outline: 0;
+ }
+ #user_input {
+   border: none;
+   height: 30px;
+   font-family: "Lucida Grande", "Bitstream Vera Sans", "Verdana";
+   font-size: 13pt;
+   padding: 6px 12px;
+ }
+ #user_url {
+   font-size: 14pt;
+   font-family: "Lucida Grande", "Bitstream Vera Sans", "Verdana";
+   border: 1px solid #666;
+   margin: auto;
+   margin-bottom: 5px;
+   padding: 6px 6px;
+ }
+</style>
+<% IF am_i_admin %>
+<div id="msg" style="margin-bottom: -100px;">
+ <h1>You're admin!</h1>
+ <h3>Be sure. Your actions can affect the other people!</h3>
+</div>
+<div id="admin_page">
+ <style>
+   #admin_sidebar {
+     display: inline-block;
+     border: 1px solid #000;
+     width: 100%;
+   }
+ </style>
+<% FOREACH user IN users %>
+ <div id="user_url">
+   <a href="/user<% user.id %>"><% user.nick %></a>&nbsp;<% user.role %>
+     <a href="/me<% user.id %>"><% user.nick %></a>&nbsp;<% user.role %>
+ </div>
+<% END %>
+
+</div>
+<% END %>
+<div id="user_page">
+ <div id="image">
+   <a href="/me<% user_id %>"><% user_nick %></a>&nbsp;<% user_nick %>
+ </div>
+ <div id="name-headline">
+   <section>
+     <h1 id="name"><% user_nick %></h1>
+   </section>
+   <section>
+     <h1 id="email"><big>Email: </big><% user_email %></h1>
+   </section>
+<% IF my_user_page %>
+   <section>
+     <h2 id="token"><big>Token: </big><% user_token %></h2>
+   </section>
+   <section>
+     <form method="post" name="user_action"><p>
+       <input id="extbut" name="exit_button" value="Exit" type="submit">
+       <input id="tokbut" name="token_button" type="submit" value="Get New Token">
+     </p></form>
+   </section>
+   <div style="clear: both;"></div>
+ </div>
+ <div id="user_settings">
+   <section>
+     <div id="msg" style="margin-top: -10px;">
+       <h1>System Settings</h1>
+     </div>
+   </section>
+   <section style="margin-top: -15px;">
+     <form method="post" name="user_action"><p>
+       <table>
+         <tr style="margin-top: -5px;">
+           <td>
+             <h1 id="text">Nick:</h1>
+           </td>
+           <td>
+             <input name="change_nick" id="user_input" placeholder="<% user_nick %>">
+           </td>
+         </tr>
+         <tr style="margin-top: -5px;">
+           <td>
+             <h1 id="text">Email:</h1>
+           </td>
+           <td>
+             <input name="change_email" id="user_input" placeholder="<% user_email %>">
+           </td>
+         </tr>
+       </table>
+       <input id="sndbut" name="change_button" value="Send" type="submit">
+     </p></form>
+   </section>
+
+
+
+
+
+
+
+    <section style="margin-top: -15px;">
+       <form method="post" name="user_action"><p>
+         <table>
+           <tr style="margin-top: -5px;">
+             <td>
+               <h1 id="text">password:</h1>
+             </td>
+             <td>
+               <input name="change_password" id="user_input" placeholder="<% user_password %>">
+             </td>
+           </tr>
+           <tr style="margin-top: -5px;">
+             <td>
+               <h1 id="text">Email:</h1>
+             </td>
+             <td>
+               <input name="change_email" id="user_input" placeholder="<% user_email %>">
+             </td>
+           </tr>
+         </table>
+         <input id="sndbut" name="change_button" value="Send" type="submit">
+       </p></form>
+     </section>
+
+
+
+
+   <div style="clear: both;"></div>
+ </div>
+<% ELSE %>
+<% IF am_i_admin %>
+ <section>
+   <h2 id="token"><big>Token: </big><% user_token %></h2>
+ </section>
+   <form method="post" name="user_action"><p>
+     <input id="hombut" name="home_button" value="Home" type="submit">
+   </p></form>
+   <div style="clear: both;"></div>
+ </div>
+ <div id="user_settings">
+   <section>
+     <form method="post" name="user_action">
+       <table style="margin-top: -5px;">
+         <tr>
+           <td>
+             <h1 id="text">Nick:</h1>
+           </td>
+           <td>
+             <input name="change_nick" id="user_input" placeholder="<% user_nick %>">
+           </td>
+         </tr>
+       </table>
+       <input id="sndbut" name="change_button" value="Send" type="submit">
+     </form>
+   </section>
+   <div style="clear: both;"></div>
+ </div>
+<% ELSE %>
+     <form method="post" name="user_action"><p>
+       <input id="hombut" name="home_button" value="Home" type="submit">
+     </p></form>
+<% END %>
+<% END %>
+   <div style="clear: both;"></div>
+</div>
+
+
+  <h2>Hoverable Dark Table</h2>
+  <p>The .table-hover class adds a hover effect (grey background color) on table rows:</p>
+  <table class="table table-dark table-hover">
+    <thead>
+      <tr>
+        <th>Firstname</th>
+        <th>Lastname</th>
+        <th>Email</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <tr>
+        <td><% user_nick%></td>
+        <td><% user_id%></td>
+        <td><% user_email%></td>
+        <td>
+ <a href="/me<% user_id %>"><% user_nick %></a>&nbsp;<% user_nick %>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</body>
+</html>
+
+
+
+
+
+<html>
+  <head>
+    <!-- Load TensorFlow.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.11.1"> </script>
+
+    <!-- Place your code in the script tag below. You can also use an external .js file -->
+    <script>
+      // Notice there is no 'import' statement. 'tf' is available on the index-page
+      // because of the script tag above.
+
+      // Define a model for linear regression.
+      const model = tf.sequential();
+      model.add(tf.layers.dense({units: 1, inputShape: [1]}));
+
+      // Prepare the model for training: Specify the loss and the optimizer.
+      model.compile({loss: 'meanSquaredError', optimizer: 'sgd'});
+
+      // Generate some synthetic data for training.
+      const xs = tf.tensor2d([1, 2, 3, 4], [4, 1]);
+      const ys = tf.tensor2d([1, 3, 5, 7], [4, 1]);
+
+      // Train the model using the data.
+      model.fit(xs, ys).then(() => {
+        // Use the model to do inference on a data point the model hasn't seen before:
+        // Open the browser devtools to see the output
+        model.predict(tf.tensor2d([5], [1, 1])).print();
+      });
+    </script>
+  </head>
+  <h1>
+<% user_nick %>
+  </h1>
+  <body>
+  </body>
+</html>

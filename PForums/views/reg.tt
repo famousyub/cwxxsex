@@ -1,0 +1,54 @@
+<style>
+	#msg:hover{
+		box-shadow: 0 0 5px 2px;
+	}
+</style>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+ <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<div id="msg" style="margin-top: 100px; margin-bottom: -100px;">
+	<a href="/" style="text-decoration: none; color: inherit;"><h1>New User? Realy?! O_o</h1></a>
+</div>
+<div id="reg">
+		<form name="reg" method="POST" action="#">
+			<div style="float: left; margin-left: 8px; margin-right: 8px;">
+				<div id="text"><p>
+						Your nickname: <br />
+						<input name="username" id="reginput" required></input>
+				</p></div>
+        <div id="text"><p>
+            Your nickname: <br />
+            <input name="middle_name" id="reginput" required></input>
+        </p></div>
+				<div id="text"><p>
+					Your email:<br />
+					<input name="email" id="reginput" required></input>
+				</p></div>
+			</div>
+			<div style="float: left; margin-left: 8px; margin-right: 8px;">
+				<div id="text"><p>
+					Your password:<br />
+					<input name="password" type="password" id="reginput" required></input>
+				</p></div>
+				<div id="text"><p>
+					Confirm your password: <br />
+					<input name="passcheck" type="password" id="reginput" required></input>
+				</p></div>
+			</div>
+			<div style="clear: both;"></div>
+			<% IF wrong_form_data %>
+                    <div id="error_login" ><% message %></div>
+            <% ELSE %>
+                    <div style="height: 8px;"></div> <!-- Beauty fix -->
+            <% END %>
+			<p>
+				<input name="button" type="submit" value="Send" id="sigbut"></input>
+			</p>
+			<input name="csrf" type="hidden" value="<% csrf_value %>">
+		</form>
+</div>

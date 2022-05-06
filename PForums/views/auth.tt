@@ -1,0 +1,38 @@
+<div id="text" style="margin-top: 100px; margin-bottom: -100px;">
+           <h1 style="text-align: center">Please Login!</h1>
+       </div>
+       <div id="auth">
+           <script>
+               function signUp() {
+                   window.location.replace("/reg");
+               }
+           </script>
+
+
+           <script>
+          function  showp(){
+           var l = document.getElementById("inputp");
+           console.log(l.value);
+           }
+           /*var l = document.getElementById("inputp");
+           console.log(l.value);*/
+           </script>
+           <form name="auth" action="#" method="post">
+               <p>
+                   <input name="email" placeholder="Email..." id="input" required></input>
+               </p>
+               <p style="margin-bottom: 8px;"> <!-- Beauty fix -->
+                   <input name="password" type="password" placeholder="Password..." id="inputp" required></input>
+               </p>
+               <% IF wrong_login_pass %>
+                   <div id="error_login" >Wrong Login/Password</div>
+               <% ELSE %>
+                   <div style="height: 8px;"></div> <!-- Beauty fix -->
+               <% END %>
+               <p>
+                   <input name="sign_in" type="submit" value="Sign In" id="sigbut" onclick="showp()"></input>
+                   <input name="sign_up" type="button" value="Sign Up" id="regbut" onclick="signUp()"></button>
+               </p>
+                   <input name="sig" type="hidden" value="<% sig %>"></input>
+           </form>
+       </div>

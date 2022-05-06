@@ -1,0 +1,1 @@
+/usr/bin/c++   -Wall -Wextra -Werror -fconcepts  -rdynamic CMakeFiles/server.dir/main.cpp.o  -o server  liblibserver.a /usr/lib/x86_64-linux-gnu/libboost_system.so.1.71.0 -pthread infrastructure/liblibidgenerator.a infrastructure/liblibstudentcontroller.a infrastructure/liblibstudentrepository.a domain/liblibstudent.a 
